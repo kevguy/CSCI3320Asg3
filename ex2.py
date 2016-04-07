@@ -169,6 +169,11 @@ def main():
     print('No. of dimensions need to be reserved: ', dimen_idx)
 
 
+    ### For code readability, I'm gonna do PCA one more time here
+    n_components = dimen_idx # i.e. 84 here
+    pca = PCA(n_components=n_components).fit(X)
+
+
     # Clustering
     range_n_clusters = [8, 9, 10, 11, 12]
     ari_score = [None] * len(range_n_clusters)
