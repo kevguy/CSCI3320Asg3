@@ -76,6 +76,12 @@ def main():
     fname_lbl = 't10k-labels.idx1-ubyte'
     [X, y]=get_labeled_data(fname_img, fname_lbl)
 
+    # Dataset info
+    print('Total dataset size: ')
+    # each row of matrix X represents an image
+    print("n_samples: ", X.shape[0])
+    print("n_features: ", X.shape[1])
+
     # Plot the mean image
     plot_mean_image(X, 'all images')
 
