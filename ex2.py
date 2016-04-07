@@ -70,6 +70,19 @@ def my_clustering(X, y, n_clusters):
     # =======================================
     return [0,0,0,0]  # You won't need this line when you are done
 
+
+def POV_arr(eigenvalues):
+    arr = []
+    sum = 0
+    for i in range(0, len(eigenvalues)):
+        sum += eigenvalues[i]
+
+    cumulate = 0
+    for i in range(0, len(eigenvalues)):
+        cumulate += eigenvalues[i]
+        arr.append(cumulate / sum)
+    return arr
+
 def main():
     # Load the dataset
     fname_img = 't10k-images.idx3-ubyte'
@@ -93,6 +106,68 @@ def main():
     # - pca.fit(X)
     # - print('We need', pca.n_components_, 'dimensions to preserve 0.95 POV')
     # =======================================
+
+    n_components = 150
+    pca = PCA(n_components=n_components).fit(X)
+    
+    ### Plot the eigenvectors corresponding to the largest 9 eigenvalues
+    eigenfaces = pca.components_.reshape(n_components, 28, 28)
+    print("number of eigenfaces: ", len(eigenfaces))
+    n_row = 1
+    n_col = 9
+    plt.figure(figsize=(1.8 * n_col, 2.4 * n_row))
+    plt.subplots_adjust(bottom=0, left=.01, right=.99, top=.90, hspace=.35)
+    for i in range(n_row * n_col):
+        plt.subplot(n_row, n_col, i + 1)
+        plt.imshow(eigenfaces[i].reshape(28,28), cmap=plt.cm.gray)
+        title_text = 'Eigenvalue ' + str(i + 1)
+        plt.title(title_text, size=12)
+        plt.xticks(())
+        plt.yticks(())
+
+    plt.show()
+
+
+    ### The following is for checking if I really got 100% of the variance 
+    print(pca.explained_variance_ratio_)
+    print(pca.explained_variance_ratio_.cumsum())
+
+    ### Calculate POV
+    # Get convariance matrix
+    covariance_matrix = pca.get_covariance()
+    # Find the dimension
+    print(covariance_matrix.shape)
+    # Get the eigenvalues and eigencvectors
+    [eig_vals, eig_vecs] = np.linalg.eig(covariance_matrix)
+    print('Dimension of eigenvalues', eig_vals.shape)
+    print('Dimension of eigenvectors', eig_vecs.shape)
+
+    real_eig_vals = []
+    imag_eig_vals = []
+    for i in range(len(eig_vals)):
+        real_eig_vals.append(eig_vals[i].real)
+        imag_eig_vals.append(eig_vals[i].imag)
+    real_eig_vals.sort(reverse = True)
+
+    POV = POV_arr(real_eig_vals)
+    print('Pov')
+    print(POV)
+    X = []
+    for i in range(0, len(POV)):
+        X.append(i+1)
+    plt.plot(X, POV, color='b', linestyle='-')
+    plt.title('Proportion of variance(POV)')
+    plt.ylabel('Prop. of var')
+    plt.xlabel('k')
+    plt.show()
+    for i in range(0, len(POV)):
+        if POV[i] > 0.9:
+            dimen_idx = i + 1
+            break
+    # The following code should tell us 84, 
+    # try comparing n_components < 84 or > 84 and see what happens
+    print('No. of dimensions need to be reserved: ', dimen_idx)
+
 
     # Clustering
     range_n_clusters = [8, 9, 10, 11, 12]
