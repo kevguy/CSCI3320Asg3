@@ -1,0 +1,8 @@
+The best number of clusters is 12.
+
+Consider ARI, the maximum happens at n_clusters = 8, and then it starts to decrease but increases again when n_clusters > 11. A better score my actually happen when n_clusters is even larger.
+Consider MRI, the curve is strictly increasing, so it suggests the best number of clusters is 12.
+Consider the Silhouette Coefficient, if the maximum happens at 8 and then starts dereasing but rises after n_clusters > 10.
+Consider V-measure, like Silhouette Coefficient, the maximum happens at 8 and then starts dereasing but rises after n_clusters > 10. 
+
+Combining all these observations, I'm guessing 12 is the best number of clusters.
