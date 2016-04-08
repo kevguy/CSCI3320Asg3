@@ -86,32 +86,11 @@ def my_clustering(X, y, n_clusters, pca):
     '''
     silhouette_coeff = metrics.silhouette_score(X, clf.labels_)
 
-    # print('clusters centre shape', clf.cluster_centers_.shape)
-    # print('ari ', ari)
-    # print('mri ', mri)
-    # print('v_measure ', v_measure)
-    # print('silhouette_coeff ', silhouette_coeff)
-
     show_images(n_clusters, clf, pca)
 
 
     return [ari,mri,v_measure,silhouette_coeff]
 
-'''
-def bench_k_means(estimator, name, data):
-    t0 = time()
-    estimator.fit(data)
-    print('% 9s   %.2fs    %i   %.3f   %.3f   %.3f   %.3f   %.3f    %.3f'
-          % (name, (time() - t0), estimator.inertia_,
-             metrics.homogeneity_score(labels, estimator.labels_),
-             metrics.completeness_score(labels, estimator.labels_),
-             metrics.v_measure_score(labels, estimator.labels_),
-             metrics.adjusted_rand_score(labels, estimator.labels_),
-             metrics.adjusted_mutual_info_score(labels,  estimator.labels_),
-             metrics.silhouette_score(data, estimator.labels_,
-                                      metric='euclidean',
-                                      sample_size=sample_size)))
-'''
 
 def POV_arr(eigenvalues):
     arr = []
@@ -175,74 +154,6 @@ def main():
     # - pca.fit(X)
     # - print('We need', pca.n_components_, 'dimensions to preserve 0.95 POV')
     # =======================================
-    '''
-    n_components = 150
-    pca = PCA(n_components=n_components).fit(X)
-    
-    ### Plot the eigenvectors corresponding to the largest 9 eigenvalues
-    eigenfaces = pca.components_.reshape(n_components, 28, 28)
-    print("number of eigenfaces: ", len(eigenfaces))
-    n_row = 1
-    n_col = 9
-    plt.figure(figsize=(1.8 * n_col, 2.4 * n_row))
-    plt.subplots_adjust(bottom=0, left=.01, right=.99, top=.90, hspace=.35)
-    for i in range(n_row * n_col):
-        plt.subplot(n_row, n_col, i + 1)
-        plt.imshow(eigenfaces[i].reshape(28,28), cmap=plt.cm.gray)
-        title_text = 'Eigenvalue ' + str(i + 1)
-        plt.title(title_text, size=12)
-        plt.xticks(())
-        plt.yticks(())
-
-    #plt.show()
-
-
-    ### The following is for checking if I really got 100% of the variance 
-    #print(pca.explained_variance_ratio_)
-    #print(pca.explained_variance_ratio_.cumsum())
-
-    ### Calculate POV
-    # Get convariance matrix
-    covariance_matrix = pca.get_covariance()
-    # Find the dimension
-    print('Dimension of convariance matrix', covariance_matrix.shape)
-    # Get the eigenvalues and eigencvectors
-    [eig_vals, eig_vecs] = np.linalg.eig(covariance_matrix)
-    print('Dimension of eigenvalues', eig_vals.shape)
-    print('Dimension of eigenvectors', eig_vecs.shape)
-
-    real_eig_vals = []
-    imag_eig_vals = []
-    for i in range(len(eig_vals)):
-        real_eig_vals.append(eig_vals[i].real)
-        imag_eig_vals.append(eig_vals[i].imag)
-    real_eig_vals.sort(reverse = True)
-
-    POV = POV_arr(real_eig_vals)
-    #print('Pov')
-    #print(POV)
-    X_x = []
-    for i in range(0, len(POV)):
-        X_x.append(i+1)
-    plt.plot(X_x, POV, color='b', linestyle='-')
-    plt.title('Proportion of variance(POV)')
-    plt.ylabel('Prop. of var')
-    plt.xlabel('k')
-    #plt.show()
-    for i in range(0, len(POV)):
-        if POV[i] > 0.9:
-            dimen_idx = i + 1
-            break
-    # The following code should tell us 84, 
-    # try comparing n_components < 84 or > 84 and see what happens
-    print('No. of dimensions need to be reserved: ', dimen_idx)
-
-
-    ### For code readability, I'm gonna do PCA one more time here
-    n_components = dimen_idx # i.e. 84 here
-    pca = PCA(n_components=n_components).fit(X)
-    X_pca = pca.transform(X)
-    '''
 
     pca = PCA(n_components=0.95).fit(X)
     X_pca = pca.transform(X)
@@ -278,16 +189,53 @@ def main():
     # Complete the code here.
     # Plot scores of all four evaluation metrics as functions of n_clusters.
     # =======================================
+    # Plot Adjusted Rand Index
+    plt.figure()
+    plt.plot(range_n_clusters, ari_score, color='b', linestyle='-',label='ARI')
+    plt.title('Adjusted Rand Index')
+    plt.ylabel('score')
+    plt.xlabel('number of clusters')
+    #plt.legend(loc='upper left', prop={'size':6})
+    plt.savefig('score_ARI.png')
+
+    # Plot Mutual Information based scores
+    plt.figure()
+    plt.plot(range_n_clusters, mri_score, color='r', linestyle='-',label='MRI')
+    plt.title('Mutual Information based scores')
+    plt.ylabel('score')
+    plt.xlabel('number of clusters')
+    #plt.legend(loc='upper left', prop={'size':6})
+    plt.savefig('score_MRI.png')
+
+    # Plot V-measure
+    plt.figure()
+    plt.plot(range_n_clusters, v_measure_score, color='c', linestyle='-',label='V-measure')
+    plt.title('V-measure')
+    plt.ylabel('score')
+    plt.xlabel('number of clusters')
+    #plt.legend(loc='upper left', prop={'size':6})
+    plt.savefig('score_V_measure.png')
+
+    # Plot Silhouette Coefficient
+    plt.figure()
+    plt.plot(range_n_clusters, silhouette_avg, color='m', linestyle='-',label='Silhouette')
+    plt.title('Silhouette Coefficient')
+    plt.ylabel('score')
+    plt.xlabel('number of clusters')
+    #plt.legend(loc='upper left', prop={'size':6})
+    plt.savefig('score_Silhouette.png')    
+
+
     plt.figure()
     plt.plot(range_n_clusters, ari_score, color='b', linestyle='-',label='ARI')
     plt.plot(range_n_clusters, mri_score, color='r', linestyle='-',label='MRI')
     plt.plot(range_n_clusters, v_measure_score, color='c', linestyle='-',label='V-measure')
     plt.plot(range_n_clusters, silhouette_avg, color='m', linestyle='-',label='Silhouette')
-    plt.title('Metric')
+    plt.title('Overall Scores')
     plt.ylabel('score')
-    plt.xlabel('metric')
+    plt.xlabel('number of clusters')
     plt.legend(loc='upper left', prop={'size':6})
-    plt.savefig('score.png')
+    plt.savefig('score_overall.png')
     #plt.show()
 
     # v-measure: range(0,1) 1 means perfectly complete labeling
