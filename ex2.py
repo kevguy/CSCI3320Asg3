@@ -175,7 +175,7 @@ def main():
     # - pca.fit(X)
     # - print('We need', pca.n_components_, 'dimensions to preserve 0.95 POV')
     # =======================================
-
+    '''
     n_components = 150
     pca = PCA(n_components=n_components).fit(X)
     
@@ -242,7 +242,10 @@ def main():
     n_components = dimen_idx # i.e. 84 here
     pca = PCA(n_components=n_components).fit(X)
     X_pca = pca.transform(X)
+    '''
 
+    pca = PCA(n_components=0.95).fit(X)
+    X_pca = pca.transform(X)
 
     # Clustering
     range_n_clusters = [8, 9, 10, 11, 12]
