@@ -16,6 +16,40 @@ def create_data():
     # Plot the data points in a scatter plot.
     # Use color to represents the clusters.
     # =======================================
+
+    # We end up with X and y
+    # X:    array of shape [n_samples, n_features]
+    # y:    array of shape [n_samples]
+    # Let's choose five colors for our labels
+    # b: blue, g: green, r: red, c: cyan, m: magenta
+    y_color = []
+    for i in range(0, y.shape[0]):
+        if (y[i] == 0):
+            y_color.append('b')
+        elif (y[i] == 1):
+            y_color.append('g')
+        elif (y[i] == 2):
+            y_color.append('r')
+        elif (y[i] == 3):
+            y_color.append('c')
+        elif (y[i] == 4):
+            y_color.append('m')   
+            
+    plt.figure()
+    # plot the data points in empty circles
+    for i in range(0, X.shape[0]):
+        plt.scatter(X[i][0], X[i][1], facecolors='none', edgecolor = y_color[i])
+    # plot the centres with full color and edge with black
+    plt.scatter(3,5, color = 'b', edgecolor = 'k')
+    plt.scatter(5,1, color = 'g', edgecolor = 'k')
+    plt.scatter(8,2, color = 'r', edgecolor = 'k')
+    plt.scatter(6,8, color = 'c', edgecolor = 'k')
+    plt.scatter(9,7, color = 'm', edgecolor = 'k')
+
+    plt.savefig('original_data')
+    plt.show()
+
+
     return [X, y]
 
 def my_clustering(X, y, n_clusters):
