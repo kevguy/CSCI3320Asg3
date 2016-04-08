@@ -126,7 +126,7 @@ def show_images(n_clusters, kmean, pca):
         plt.xticks(())
         plt.yticks(())
 
-    plt.savefig('n_clusters_' + str(n_clusters) + '.png')
+    plt.savefig('ex2_n_clusters_' + str(n_clusters) + '.png')
     # plt.show()
 
 
@@ -196,7 +196,7 @@ def main():
     plt.ylabel('score')
     plt.xlabel('number of clusters')
     #plt.legend(loc='upper left', prop={'size':6})
-    plt.savefig('score_ARI.png')
+    plt.savefig('ex2_score_ARI.png')
 
     # Plot Mutual Information based scores
     plt.figure()
@@ -205,7 +205,7 @@ def main():
     plt.ylabel('score')
     plt.xlabel('number of clusters')
     #plt.legend(loc='upper left', prop={'size':6})
-    plt.savefig('score_MRI.png')
+    plt.savefig('ex2_score_MRI.png')
 
     # Plot V-measure
     plt.figure()
@@ -214,7 +214,7 @@ def main():
     plt.ylabel('score')
     plt.xlabel('number of clusters')
     #plt.legend(loc='upper left', prop={'size':6})
-    plt.savefig('score_V_measure.png')
+    plt.savefig('ex2_score_V_measure.png')
 
     # Plot Silhouette Coefficient
     plt.figure()
@@ -223,7 +223,7 @@ def main():
     plt.ylabel('score')
     plt.xlabel('number of clusters')
     #plt.legend(loc='upper left', prop={'size':6})
-    plt.savefig('score_Silhouette.png')    
+    plt.savefig('ex2_score_Silhouette.png')    
 
 
     plt.figure()
@@ -235,7 +235,7 @@ def main():
     plt.ylabel('score')
     plt.xlabel('number of clusters')
     plt.legend(loc='upper left', prop={'size':6})
-    plt.savefig('score_overall.png')
+    plt.savefig('ex2_score_overall.png')
     #plt.show()
 
     # v-measure: range(0,1) 1 means perfectly complete labeling

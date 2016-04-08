@@ -46,7 +46,7 @@ def create_data():
     plt.scatter(6,8, color = 'c', edgecolor = 'k', marker = 'x', s = 256, linewidths=3)
     plt.scatter(9,7, color = 'm', edgecolor = 'k', marker = 'x', s = 256, linewidths=3)
 
-    plt.savefig('original_data.png')
+    plt.savefig('ex1_original_data.png')
     plt.show()
 
 
@@ -88,9 +88,20 @@ def my_clustering(X, y, n_clusters):
 
     plt.title('number of clusters: ' + str(n_clusters))
     plt.savefig('ex1_n_clusters_' + str(n_clusters) + '.png')
-    plt.show()
+    #plt.show()
 
-    return [0,0,0,0]  # You won't need this line when you are done
+    from sklearn import metrics
+    ari = metrics.adjusted_rand_score(y, clf.labels_)
+    mri = metrics.adjusted_mutual_info_score(y, clf.labels_)
+    v_measure = metrics.v_measure_score(y, clf.labels_)
+    '''
+    silhouette_coeff = metrics.silhouette_score(X, clf.labels_,
+                                      metric='euclidean',
+                                      sample_size=300)
+    '''
+    silhouette_coeff = metrics.silhouette_score(X, clf.labels_)
+
+    return [ari,mri,v_measure,silhouette_coeff]
 
 def main():
     X, y = create_data()
@@ -113,6 +124,52 @@ def main():
     # Complete the code here.
     # Plot scores of all four evaluation metrics as functions of n_clusters.
     # =======================================
+    plt.figure()
+    plt.plot(range_n_clusters, ari_score, color='b', linestyle='-',label='ARI')
+    plt.title('Adjusted Rand Index')
+    plt.ylabel('score')
+    plt.xlabel('number of clusters')
+    #plt.legend(loc='upper left', prop={'size':6})
+    plt.savefig('ex1_score_ARI.png')
+
+    # Plot Mutual Information based scores
+    plt.figure()
+    plt.plot(range_n_clusters, mri_score, color='r', linestyle='-',label='MRI')
+    plt.title('Mutual Information based scores')
+    plt.ylabel('score')
+    plt.xlabel('number of clusters')
+    #plt.legend(loc='upper left', prop={'size':6})
+    plt.savefig('ex1_score_MRI.png')
+
+    # Plot V-measure
+    plt.figure()
+    plt.plot(range_n_clusters, v_measure_score, color='c', linestyle='-',label='V-measure')
+    plt.title('V-measure')
+    plt.ylabel('score')
+    plt.xlabel('number of clusters')
+    #plt.legend(loc='upper left', prop={'size':6})
+    plt.savefig('ex1_score_V_measure.png')
+
+    # Plot Silhouette Coefficient
+    plt.figure()
+    plt.plot(range_n_clusters, silhouette_avg, color='m', linestyle='-',label='Silhouette')
+    plt.title('Silhouette Coefficient')
+    plt.ylabel('score')
+    plt.xlabel('number of clusters')
+    #plt.legend(loc='upper left', prop={'size':6})
+    plt.savefig('ex1_score_Silhouette.png')    
+
+
+    plt.figure()
+    plt.plot(range_n_clusters, ari_score, color='b', linestyle='-',label='ARI')
+    plt.plot(range_n_clusters, mri_score, color='r', linestyle='-',label='MRI')
+    plt.plot(range_n_clusters, v_measure_score, color='c', linestyle='-',label='V-measure')
+    plt.plot(range_n_clusters, silhouette_avg, color='m', linestyle='-',label='Silhouette')
+    plt.title('Overall Scores')
+    plt.ylabel('score')
+    plt.xlabel('number of clusters')
+    plt.legend(loc='upper left', prop={'size':6})
+    plt.savefig('ex1_score_overall.png')
 
 if __name__ == '__main__':
     main()
