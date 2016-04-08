@@ -6,6 +6,7 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from scipy import misc
 from struct import unpack
+from time import time
 
 from sklearn import metrics
 from sklearn.decomposition import PCA
@@ -69,8 +70,8 @@ def my_clustering(X, y, n_clusters):
     # return scores like this: return [score, score, score, score]
     # =======================================
     from sklearn.cluster import KMeans
-    print('fuck X ', X.shape)
-    print('fuck y ', y.shape)
+    #print('fuck X ', X.shape)
+    #print('fuck y ', y.shape)
     clf = KMeans(n_clusters)
     clf.fit(X)
 
@@ -82,6 +83,8 @@ def my_clustering(X, y, n_clusters):
                                       metric='euclidean',
                                       sample_size=300)
 
+    print('clusters centre shape', clf.cluster_centers_.shape)
+    print('\n')
     # print('ari ', ari)
     # print('mri ', mri)
     # print('v_measure ', v_measure)
@@ -119,6 +122,24 @@ def POV_arr(eigenvalues):
         cumulate += eigenvalues[i]
         arr.append(cumulate / sum)
     return arr
+
+'''
+def show_image(n_clusters, kmean):
+    n_row = 1
+    n_col = n_clusters
+    plt.figure(figsize=(1.8 * n_col, 2.4 * n_row))
+    plt.subplots_adjust(bottom=0, left=.01, right=.99, top=.90, hspace=.35)
+    for i in range(n_row * n_col):
+        plt.subplot(n_row, n_col, i + 1)
+        plt.imshow(eigenfaces[i].reshape(28,28), cmap=plt.cm.gray)
+        title_text = 'Eigenvalue ' + str(i + 1)
+        plt.title(title_text, size=12)
+        plt.xticks(())
+        plt.yticks(())
+
+    plt.show()_
+'''
+
 
 def main():
     # Load the dataset
@@ -219,14 +240,25 @@ def main():
     v_measure_score = [None] * len(range_n_clusters)
     silhouette_avg = [None] * len(range_n_clusters)
 
+
+    print(79 * '_')
+    print('% 9s' % 'n_clusters'
+      '     time               ARI               MRIv-measure score    avg silhouette score')
+
+
     for n_clusters in range_n_clusters:
+        t0 = time()
         i = n_clusters - range_n_clusters[0]
-        print("Number of clusters is: ", n_clusters)
+        #print("Number of clusters is: ", n_clusters)
         [ari_score[i], mri_score[i], v_measure_score[i], silhouette_avg[i]] = my_clustering(X_pca, y, n_clusters)
-        print('The ARI score is: ', ari_score[i])
-        print('The MRI score is: ', mri_score[i])
-        print('The v-measure score is: ', v_measure_score[i])
-        print('The average silhouette score is: ', silhouette_avg[i])
+        # print('The ARI score is: ', ari_score[i])
+        # print('The MRI score is: ', mri_score[i])
+        # print('The v-measure score is: ', v_measure_score[i])
+        # print('The average silhouette score is: ', silhouette_avg[i])
+        print('% 9s   %.15f   %.15f   %.15f   %.15f    %.15f'
+          % (n_clusters, (time() - t0), ari_score[i], mri_score[i], v_measure_score[i], silhouette_avg[i]))
+
+    print(79 * '_')
 
     # =======================================
     # Complete the code here.
