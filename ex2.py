@@ -209,6 +209,7 @@ def main():
     ### For code readability, I'm gonna do PCA one more time here
     n_components = dimen_idx # i.e. 84 here
     pca = PCA(n_components=n_components).fit(X)
+    X_pca = pca.transform(X)
 
 
     # Clustering
@@ -221,7 +222,7 @@ def main():
     for n_clusters in range_n_clusters:
         i = n_clusters - range_n_clusters[0]
         print("Number of clusters is: ", n_clusters)
-        [ari_score[i], mri_score[i], v_measure_score[i], silhouette_avg[i]] = my_clustering(X, y, n_clusters)
+        [ari_score[i], mri_score[i], v_measure_score[i], silhouette_avg[i]] = my_clustering(X_pca, y, n_clusters)
         print('The ARI score is: ', ari_score[i])
         print('The MRI score is: ', mri_score[i])
         print('The v-measure score is: ', v_measure_score[i])
