@@ -40,13 +40,13 @@ def create_data():
     for i in range(0, X.shape[0]):
         plt.scatter(X[i][0], X[i][1], facecolors='none', edgecolor = y_color[i])
     # plot the centres with full color and edge with black
-    plt.scatter(3,5, color = 'b', edgecolor = 'k')
-    plt.scatter(5,1, color = 'g', edgecolor = 'k')
-    plt.scatter(8,2, color = 'r', edgecolor = 'k')
-    plt.scatter(6,8, color = 'c', edgecolor = 'k')
-    plt.scatter(9,7, color = 'm', edgecolor = 'k')
+    plt.scatter(3,5, color = 'b', edgecolor = 'k', marker = 'x', s = 256, linewidths=3)
+    plt.scatter(5,1, color = 'g', edgecolor = 'k', marker = 'x', s = 256, linewidths=3)
+    plt.scatter(8,2, color = 'r', edgecolor = 'k', marker = 'x', s = 256, linewidths=3)
+    plt.scatter(6,8, color = 'c', edgecolor = 'k', marker = 'x', s = 256, linewidths=3)
+    plt.scatter(9,7, color = 'm', edgecolor = 'k', marker = 'x', s = 256, linewidths=3)
 
-    plt.savefig('original_data')
+    plt.savefig('original_data.png')
     plt.show()
 
 
@@ -57,6 +57,39 @@ def my_clustering(X, y, n_clusters):
     # Complete the code here.
     # return scores like this: return [score, score, score, score]
     # =======================================
+    from sklearn.cluster import KMeans
+    clf = KMeans(n_clusters = n_clusters)
+    clf.fit(X)
+    pred = clf.predict(X)
+
+    y_color = []
+    for i in range(0, pred.shape[0]):
+        if (pred[i] == 0):
+            y_color.append('b')
+        elif (pred[i] == 1):
+            y_color.append('g')
+        elif (pred[i] == 2):
+            y_color.append('r')
+        elif (pred[i] == 3):
+            y_color.append('c')
+        elif (pred[i] == 4):
+            y_color.append('m')
+        elif (pred[i] == 5):
+            y_color.append('y')
+            
+    plt.figure()
+    # plot the data points in empty circles
+    for i in range(0, X.shape[0]):
+        plt.scatter(X[i][0], X[i][1], facecolors='none', edgecolor = y_color[i])
+
+    # plot the centres with full color and edge with black
+    for i in range(0, clf.cluster_centers_.shape[0]):
+        plt.scatter(clf.cluster_centers_[i][0], clf.cluster_centers_[i][1], marker = 'x', color = 'k', s = 256, linewidths=3)        
+
+    plt.title('number of clusters: ' + str(n_clusters))
+    plt.savefig('ex1_n_clusters_' + str(n_clusters) + '.png')
+    plt.show()
+
     return [0,0,0,0]  # You won't need this line when you are done
 
 def main():
