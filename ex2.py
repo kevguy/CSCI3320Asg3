@@ -148,7 +148,7 @@ def show_images(n_clusters, kmean, pca):
         plt.yticks(())
 
     plt.savefig('n_clusters_' + str(n_clusters) + '.png')
-    plt.show()
+    # plt.show()
 
 
 
@@ -275,6 +275,32 @@ def main():
     # Complete the code here.
     # Plot scores of all four evaluation metrics as functions of n_clusters.
     # =======================================
+    plt.figure()
+    plt.plot(range_n_clusters, ari_score, color='b', linestyle='-',label='ARI')
+    plt.plot(range_n_clusters, mri_score, color='r', linestyle='-',label='MRI')
+    plt.plot(range_n_clusters, v_measure_score, color='c', linestyle='-',label='V-measure')
+    plt.plot(range_n_clusters, silhouette_avg, color='m', linestyle='-',label='Silhouette')
+    plt.title('Metric')
+    plt.ylabel('score')
+    plt.xlabel('metric')
+    plt.legend(loc='upper left', prop={'size':6})
+    plt.savefig('score.png')
+    #plt.show()
+
+    # v-measure: range(0,1) 1 means perfectly complete labeling
+    # ARI adjusted Rand index: is ensured to have a value close to 0.0
+    #                            for random labeling independently of the 
+    #                           number of clusters and samples and exactly 1.0 
+    #                           when the clusterings are identical (up to a 
+    #                           permutation).
+    #                           Similarity score between -1.0 and 1.0. 
+    #                           Random labelings have an ARI close to 0.0. 1.0 stands for perfect match.
+    # The AMI: returns a value of 1 when the two partitions are identical (ie perfectly matched). 
+    #            Random partitions (independent labellings) have an expected AMI around 0 on average hence can be negative.
+    # Silhoutte: The best value is 1 and the worst value is -1. 
+    #               Values near 0 indicate overlapping clusters. 
+    #               Negative values generally indicate that a sample has been assigned 
+    #               to the wrong cluster, as a different cluster is more similar.
 
 if __name__ == '__main__':
     main()
