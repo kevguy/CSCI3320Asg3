@@ -64,7 +64,7 @@ def get_labeled_data(imagefile, labelfile):
     return (X, y)
 
 
-def my_clustering(X, y, n_clusters):
+def my_clustering(X, y, n_clusters, pca):
     # =======================================
     # Complete the code here.
     # return scores like this: return [score, score, score, score]
@@ -79,18 +79,20 @@ def my_clustering(X, y, n_clusters):
     ari = metrics.adjusted_rand_score(y, clf.labels_)
     mri = metrics.adjusted_mutual_info_score(y, clf.labels_)
     v_measure = metrics.v_measure_score(y, clf.labels_)
+    '''
     silhouette_coeff = metrics.silhouette_score(X, clf.labels_,
                                       metric='euclidean',
                                       sample_size=300)
+    '''
+    silhouette_coeff = metrics.silhouette_score(X, clf.labels_)
 
-    print('clusters centre shape', clf.cluster_centers_.shape)
-    print('\n')
+    # print('clusters centre shape', clf.cluster_centers_.shape)
     # print('ari ', ari)
     # print('mri ', mri)
     # print('v_measure ', v_measure)
     # print('silhouette_coeff ', silhouette_coeff)
 
-
+    show_images(n_clusters, clf, pca)
 
 
     return [ari,mri,v_measure,silhouette_coeff]
@@ -123,22 +125,31 @@ def POV_arr(eigenvalues):
         arr.append(cumulate / sum)
     return arr
 
-'''
-def show_image(n_clusters, kmean):
+
+def show_images(n_clusters, kmean, pca):
+
+    # in kmean.cluster_centers_.shape, what we get is a (n_clusters, 84) array
+    # so for every [1,84] vector we have inside kmean.cluster_centers_,
+    # we need to trasform it back to the original vector
+    # then transorm it back into the original 28x28 matrix   
+    cluster_centers_org = pca.inverse_transform(kmean.cluster_centers_)
+
+
     n_row = 1
     n_col = n_clusters
     plt.figure(figsize=(1.8 * n_col, 2.4 * n_row))
     plt.subplots_adjust(bottom=0, left=.01, right=.99, top=.90, hspace=.35)
     for i in range(n_row * n_col):
         plt.subplot(n_row, n_col, i + 1)
-        plt.imshow(eigenfaces[i].reshape(28,28), cmap=plt.cm.gray)
-        title_text = 'Eigenvalue ' + str(i + 1)
+        plt.imshow(cluster_centers_org[i].reshape(28,28), cmap=plt.cm.gray)
+        title_text = 'Center ' + str(i + 1)
         plt.title(title_text, size=12)
         plt.xticks(())
         plt.yticks(())
 
-    plt.show()_
-'''
+    plt.savefig('n_clusters_' + str(n_clusters) + '.png')
+    plt.show()
+
 
 
 def main():
@@ -243,14 +254,14 @@ def main():
 
     print(79 * '_')
     print('% 9s' % 'n_clusters'
-      '     time               ARI               MRIv-measure score    avg silhouette score')
+      '     time               ARI               MRI               v-measure score    avg silhouette score')
 
 
     for n_clusters in range_n_clusters:
         t0 = time()
         i = n_clusters - range_n_clusters[0]
         #print("Number of clusters is: ", n_clusters)
-        [ari_score[i], mri_score[i], v_measure_score[i], silhouette_avg[i]] = my_clustering(X_pca, y, n_clusters)
+        [ari_score[i], mri_score[i], v_measure_score[i], silhouette_avg[i]] = my_clustering(X_pca, y, n_clusters, pca)
         # print('The ARI score is: ', ari_score[i])
         # print('The MRI score is: ', mri_score[i])
         # print('The v-measure score is: ', v_measure_score[i])
