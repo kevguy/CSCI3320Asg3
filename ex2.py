@@ -68,8 +68,45 @@ def my_clustering(X, y, n_clusters):
     # Complete the code here.
     # return scores like this: return [score, score, score, score]
     # =======================================
-    return [0,0,0,0]  # You won't need this line when you are done
+    from sklearn.cluster import KMeans
+    print('fuck X ', X.shape)
+    print('fuck y ', y.shape)
+    clf = KMeans(n_clusters)
+    clf.fit(X)
 
+    from sklearn import metrics
+    ari = metrics.adjusted_rand_score(y, clf.labels_)
+    mri = metrics.adjusted_mutual_info_score(y, clf.labels_)
+    v_measure = metrics.v_measure_score(y, clf.labels_)
+    silhouette_coeff = metrics.silhouette_score(X, clf.labels_,
+                                      metric='euclidean',
+                                      sample_size=300)
+
+    # print('ari ', ari)
+    # print('mri ', mri)
+    # print('v_measure ', v_measure)
+    # print('silhouette_coeff ', silhouette_coeff)
+
+
+
+
+    return [ari,mri,v_measure,silhouette_coeff]
+
+'''
+def bench_k_means(estimator, name, data):
+    t0 = time()
+    estimator.fit(data)
+    print('% 9s   %.2fs    %i   %.3f   %.3f   %.3f   %.3f   %.3f    %.3f'
+          % (name, (time() - t0), estimator.inertia_,
+             metrics.homogeneity_score(labels, estimator.labels_),
+             metrics.completeness_score(labels, estimator.labels_),
+             metrics.v_measure_score(labels, estimator.labels_),
+             metrics.adjusted_rand_score(labels, estimator.labels_),
+             metrics.adjusted_mutual_info_score(labels,  estimator.labels_),
+             metrics.silhouette_score(data, estimator.labels_,
+                                      metric='euclidean',
+                                      sample_size=sample_size)))
+'''
 
 def POV_arr(eigenvalues):
     arr = []
@@ -125,18 +162,18 @@ def main():
         plt.xticks(())
         plt.yticks(())
 
-    plt.show()
+    #plt.show()
 
 
     ### The following is for checking if I really got 100% of the variance 
-    print(pca.explained_variance_ratio_)
-    print(pca.explained_variance_ratio_.cumsum())
+    #print(pca.explained_variance_ratio_)
+    #print(pca.explained_variance_ratio_.cumsum())
 
     ### Calculate POV
     # Get convariance matrix
     covariance_matrix = pca.get_covariance()
     # Find the dimension
-    print(covariance_matrix.shape)
+    print('Dimension of convariance matrix', covariance_matrix.shape)
     # Get the eigenvalues and eigencvectors
     [eig_vals, eig_vecs] = np.linalg.eig(covariance_matrix)
     print('Dimension of eigenvalues', eig_vals.shape)
@@ -150,16 +187,16 @@ def main():
     real_eig_vals.sort(reverse = True)
 
     POV = POV_arr(real_eig_vals)
-    print('Pov')
-    print(POV)
-    X = []
+    #print('Pov')
+    #print(POV)
+    X_x = []
     for i in range(0, len(POV)):
-        X.append(i+1)
-    plt.plot(X, POV, color='b', linestyle='-')
+        X_x.append(i+1)
+    plt.plot(X_x, POV, color='b', linestyle='-')
     plt.title('Proportion of variance(POV)')
     plt.ylabel('Prop. of var')
     plt.xlabel('k')
-    plt.show()
+    #plt.show()
     for i in range(0, len(POV)):
         if POV[i] > 0.9:
             dimen_idx = i + 1
